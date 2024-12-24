@@ -1,6 +1,7 @@
 package io.github.niestrat99.paytochat.config;
 
 import io.github.niestrat99.paytochat.Main;
+import io.github.niestrat99.paytochat.utils.VaultHandler;
 import io.github.thatsmusic99.configurationmaster.api.ConfigFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,6 +79,17 @@ public class Config extends ConfigFile {
         addExample("commands.me", 5.0);
         addComment(separator);
 
+        // Payment Info
+        addSection("Payment Info");
+        addComment(
+                """
+                When enabled, it will notify the player of the payment and remaining balance on the action bar.
+                """
+        );
+        addDefault("payment-info", true);
+        addComment(separator);
+
+        // World Whitelist
         addSection("World Whitelist");
         addComment(
                 """
@@ -101,11 +113,14 @@ public class Config extends ConfigFile {
 
     public static void setCommandPrice(String command, Double newPrice) {
         if (!configFile.contains("commands." + command)) {
+            Main.debug(command + " is already listed, changing price to " + newPrice);
             configFile.set("commands." + command, newPrice);
         } else {
             if (newPrice == 0) {
+                Main.debug(command + " will be removed from list, since price is set to 0.");
                 configFile.remove("commands." + command);
             } else {
+                Main.debug(command + " will be added to the list with the price " + newPrice);
                 configFile.set("commands." + command, newPrice);
             }
         }
@@ -124,7 +139,7 @@ public class Config extends ConfigFile {
     public static void setChatPrice(Double newPrice) {
         configFile.set("chat-price", newPrice);
         saveConfig();
-        //reloadConfig();
+        Main.debug("New chat price: " + VaultHandler.economy.format(getChatPrice()));
     }
 
     public static boolean debugEnabled() {
@@ -145,14 +160,18 @@ public class Config extends ConfigFile {
             whitelist.add(world);
         }
         saveConfig();
-        reloadConfig();
+        Main.debug(world + " was added to the whitelist!");
     }
 
     public static void removeWorld(String world) {
         List<String> whitelist = configFile.getList("world-whitelist");
         whitelist.remove(world);
         saveConfig();
-        reloadConfig();
+        Main.debug(world + " was removed from the whitelist!");
+    }
+
+    public static boolean paymentInfoEnabled() {
+        return configFile.getBoolean("payment-info");
     }
 
     public static List<String> getWhitelist() {

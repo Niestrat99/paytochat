@@ -1,5 +1,6 @@
 package io.github.niestrat99.paytochat.listeners;
 
+import io.github.niestrat99.paytochat.Main;
 import io.github.niestrat99.paytochat.config.Config;
 import io.github.niestrat99.paytochat.utils.VaultHandler;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -13,6 +14,12 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onChat(AsyncChatEvent e) {
         Player player = e.getPlayer();
+
+        Main.debug(player.getName() + " attempts to send a chat message!"
+                + "\nMessage: " + e.message()
+                + "\nIn world: " + player.getWorld().getName()
+        );
+
         if (player.hasPermission("ptc.bypass") || !isInWhitelistedWorld(player)) {return;}
 
         double price = Config.getChatPrice();
@@ -25,6 +32,12 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onCommandInput(PlayerCommandPreprocessEvent e) {
         Player player = e.getPlayer();
+
+        Main.debug(player.getName() + " attempts to use a command!"
+                + "\nCommand: " + e.getMessage()
+                + "\nIn world: " + player.getWorld().getName()
+        );
+
         if (player.hasPermission("ptc.bypass") || !isInWhitelistedWorld(player)) {return;}
 
         String message = e.getMessage().toLowerCase();
@@ -39,8 +52,10 @@ public class ChatListener implements Listener {
 
     private static boolean isInWhitelistedWorld(Player player) {
         if (Config.getWhitelist().contains(player.getWorld().getName())) {
+            Main.debug("World " + player.getWorld().getName() + " is whitelisted!");
             return true;
         }
+        Main.debug("World " + player.getWorld().getName() + " is not whitelisted! Stopping here!");
         return false;
     }
 }

@@ -32,12 +32,17 @@ public class VaultHandler {
 
         if (bal >= amount) {
             if (bal < 2 * amount) {
-                MessageHandler.info(player, "You have now run out of funds for his action!");
+                Main.debug(player.getName() + " no longer has enough funds!");
+                MessageHandler.info(player, "You no longer have enough funds for this action!");
             }
+            Main.debug(player.getName() + " has enough funds!");
             economy.withdrawPlayer(player, amount);
+            Main.debug("Withdrawn " + economy.format(amount) + " from " + player.getName());
             MessageHandler.sendBalanceUpdate(player, amount);
             return true;
         } else {
+            Main.debug("Player is lacking funds for this action.");
+            Main.debug("Player's balance: " + bal + " | Price of action: " + amount);
             double missing = Math.abs(bal - amount);
             MessageHandler.error(player, "You need &6" + economy.format(missing) + " &cmore to do this action!");
             return false;

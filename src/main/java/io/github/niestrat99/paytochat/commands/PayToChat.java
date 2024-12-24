@@ -27,23 +27,32 @@ public class PayToChat implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (sender instanceof Player player) {
             if (args.length > 0) {
+
+                Main.debug("Argument 0: " + args[0]);
+
                 switch (args[0]) {
                     case "reload" -> {
                         if (!Main.hasPerms(player, "ptc.reload")) {
                             return false;
                         }
+                        Main.debug("Reloading config.yml");
+
                         MessageHandler.info(player, "Reloading configurations...");
                         Config.reloadConfig();
+
+                        Main.debug("Config.yml has been reloaded!");
+
                         MessageHandler.success(player, "Reload complete!");
                     }
 
                     case "chatprice" -> {
-                        Main.debug("Check permission for " + player.getName());
                         if (!Main.hasPerms(player, "ptc.chatprice")) {
                             return false;
                         }
                         if (args.length > 1) {
-                            Main.debug("Validating if entered argument is a double value.");
+
+                            Main.debug("Argument 1: " + args[1]);
+
                             if (MessageHandler.validateDouble(args[1])) {
                                 double newPrice = Double.parseDouble(args[1]);
                                 Main.debug("Price was identified and is " + newPrice);
@@ -62,6 +71,10 @@ public class PayToChat implements TabExecutor {
                             return false;
                         }
                         if (args.length > 2) {
+
+                            Main.debug("Argument 1: " + args[1]);
+                            Main.debug("Argument 2: " + args[2]);
+
                             String commandName = args[1];
                             if (MessageHandler.validateDouble(args[2])) {
                                 double price = Double.parseDouble(args[2]);
@@ -72,6 +85,8 @@ public class PayToChat implements TabExecutor {
                                 return false;
                             }
                         } else {
+                            Main.debug("Showing the price of command " + args[1]);
+
                             if (!args[1].isEmpty() && Config.getCommands().contains(args[1])) {
                                 MessageHandler.info(player, "Price of command &6/" + args[1] + "&7: &6" + VaultHandler.economy.format(Config.getCommandPrice(args[1])));
                                 return false;
@@ -84,6 +99,10 @@ public class PayToChat implements TabExecutor {
                     case "wlworld" -> {
                         if (!Main.hasPerms(player, "ptc.whitelistworld")) {return false;}
                         if (args.length > 2) {
+
+                            Main.debug("Argument 1: " + args[1]);
+                            Main.debug("Argument 2: " + args[2]);
+
                             String worldName = args[2];
                             if (args[1].equals("add")) {
                                 if (WhitelistWorld.addWorld(player, worldName)) {
@@ -103,6 +122,9 @@ public class PayToChat implements TabExecutor {
                     default -> MessageHandler.error(player, "Too few arguments!");
                 }
             } else {
+
+                Main.debug("Argument 1 is empty, showing commands.");
+
                 if (!Main.hasPerms(player, "ptc.help")) {
                     return false;
                 }

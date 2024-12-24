@@ -67,7 +67,7 @@ public class Main extends JavaPlugin {
     }
 
     public static boolean hasPerms(Player player, String permission) {
-        debug("Permission node: " + permission);
+        debug("Check if player " + player.getName() + " has permission accss to " + permission);
         if (player.hasPermission(permission)) {
             debug("Player has permission!");
             return true;

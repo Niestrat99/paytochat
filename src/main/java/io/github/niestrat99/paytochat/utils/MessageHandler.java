@@ -1,5 +1,7 @@
 package io.github.niestrat99.paytochat.utils;
 
+import io.github.niestrat99.paytochat.Main;
+import io.github.niestrat99.paytochat.config.Config;
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Vault;
@@ -21,13 +23,17 @@ public class MessageHandler {
     }
 
     public static boolean validateDouble(String argumentSection) {
+        Main.debug("Is argument a double value?");
         if (argumentSection.matches("^(\\d+.\\d+)$")) {
+            Main.debug("Double value detected!");
             return true;
         }
+        Main.debug("Argument is not a valid double value!");
         return false;
     }
 
     public static void sendBalanceUpdate(Player player, Double amountPaid) {
+        if (!Config.paymentInfoEnabled()) {return;}
         String balance = VaultHandler.economy.format(VaultHandler.economy.getBalance(player));
         String formatPaid = VaultHandler.economy.format(amountPaid);
 
